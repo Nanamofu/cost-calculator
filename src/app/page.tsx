@@ -1,101 +1,97 @@
-import Image from "next/image";
+"use client";
+import { NextPage } from "next";
+import { useState } from "react";
 
-export default function Home() {
+const Home: NextPage = () => {
+  const [text, setText] = useState<string>(''); // アイテム名
+  const [number1, setNumber1] = useState<number | ''>(''); // 価格
+  const [number2, setNumber2] = useState<number | ''>(''); // 内容量
+  const [item, setItem] = useState<string[]>([]); // アイテムリスト
+
+  // テキストの変更を処理する関数
+  const changeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
+  // 1つ目の数値の変更を処理する関数
+  const changeNumber1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNumber1(value === '' ? '' : parseFloat(value));
+  };
+
+  // 2つ目の数値の変更を処理する関数
+  const changeNumber2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNumber2(value === '' ? '' : parseFloat(value));
+  };
+
+  // Itemを追加する関数
+  const addItem = () => {
+    if (text.trim() === '' || number1 === '' || number2 === '') return; // 空のItemを追加しない
+
+    // 数値がゼロで割ることを防止
+    if (number2 === 0) {
+      alert("ゼロで割ることはできません。");
+      return;
+    }
+
+    // 割り算を行う
+    const result = number1 / number2;
+
+    // 計算結果をItemに追加
+    const newitem = [`${text}: ${result}`, ...item];
+    setItem(newitem);
+
+    // 入力フィールドをリセット
+    setText('');
+    setNumber1('');
+    setNumber2('');
+  };
+
+  // Itemを削除する関数
+  const deleteItem = (index: number) => {
+    const newitem = item.filter((_, i) => i !== index); // 削除されたItem以外を保持
+    setItem(newitem);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <main>
+      <div>
+        <p>作成者：ななりん</p>
+        <h1>コスト計算機</h1>
+        <p>アイテム名、価格、内容量を入力し計算ボタンを押してください。</p>
+        <input 
+          type="text" 
+          value={text} 
+          onChange={changeText} 
+          placeholder="アイテム" 
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <input 
+          type="number" 
+          value={number1 === '' ? '' : number1} 
+          onChange={changeNumber1} 
+          placeholder="価格(数値のみ)" 
+        />
+        <input 
+          type="number" 
+          value={number2 === '' ? '' : number2} 
+          onChange={changeNumber2} 
+          placeholder="内容量(数値のみ)" 
+        />
+        <button onClick={addItem} disabled={text.trim() === '' || number1 === '' || number2 === ''}>計算</button>
+      </div>
+      <div>
+        <ul>
+          {item.map((item, index) => (
+            <li key={index}>
+              <p>{item}</p>
+              <button onClick={() => deleteItem(index)}>削除</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </main>
   );
-}
+};
+
+export default Home;
